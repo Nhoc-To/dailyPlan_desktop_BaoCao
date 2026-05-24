@@ -17,7 +17,7 @@ export interface Task {
     endTime?: string;
     tags?: string;
     color?: string;
-    completedDays?: boolean;
+    completedDays?: string;
     status: boolean;
 }
 
