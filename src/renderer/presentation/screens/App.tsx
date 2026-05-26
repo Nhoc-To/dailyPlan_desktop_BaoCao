@@ -33,6 +33,10 @@ const App: React.FC = () => {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<WeeklyOverviewScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
+            {/* {<Route path="/" element={<WeeklyOverviewScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
+            <Route path="/calendar" element={<CalendarScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
+            <Route path="/yearly" element={<YearlyTasksScreen tasks={tasks} onTaskUpdated={fetchTasks} />} /> */}
+            {/* <Route path="/stats" element={<StatsScreen tasks={tasks} />} /> } */}
             <Route path="/editor" element={<TaskEditorScreen onTaskUpdated={fetchTasks} />} />
           </Routes>
         </main>
