@@ -8,7 +8,7 @@ interface Props {
 }
 
 const REMINDER_OPTS = ['5 phút', '10 phút', '30 phút', '1 giờ', '1 ngày'];
-const REPEAT_OPTS = ['Không', 'Hàng ngày', 'Hàng tuần', 'Hàng tháng'];
+const REPEAT_OPTS = ['Hàng ngày', 'Hàng tuần', 'Hàng tháng'];
 
 const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
   const navigate = useNavigate();
@@ -83,25 +83,26 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
 
   return (
     <div style={{ display: 'flex', gap: '24px', height: '100%', alignItems: 'flex-start' }}>
-      
+      {/* thẻ  tạo tác vụ */}
       <div className="glass card" style={{ 
         flex: 1.2, 
         display: 'flex', 
         flexDirection: 'column', 
         gap: '24px',
         maxHeight: '100%',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        
       }}>
         <h2 style={{ color: 'var(--text-main)', marginBottom: '8px', fontSize: '1.8rem', fontWeight: 700 }}>
           Tạo Tác Vụ Mới
         </h2>
-
+        {/* tên và mô tả */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <input 
             className="form-input"
             style={{ fontSize: '1.2rem', padding: '16px', fontWeight: 600, borderLeft: `4px solid ${currentTheme}` }}
             type="text" 
-            placeholder="Tên tác vụ (Bắt buộc)..." 
+            placeholder="Tên tác vụ..." 
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
           />
@@ -112,6 +113,7 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
+          {/* cài đặt ngày giờ */}
           <div style={{ display: 'flex', gap: '16px' }}>
             <div style={{ flex: 1 }}>
               <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -133,7 +135,7 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
             </div>
           </div>
         </div>
-
+        {/* chọn phân loại cho tác vụ */}
         <div>
           <label style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '12px', display: 'block' }}>Phân loại tác vụ</label>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
@@ -190,14 +192,18 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
              <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Bạn có thể chọn màu bất kỳ!</span>
            </div>
         </div>
-
+        {/* nhắc nhở và lặp lại */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', background: 'rgba(255,255,255,0.4)', padding: '20px', borderRadius: '16px' }}>
            <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}><Bell size={18} color={currentTheme} /> Nhắc nhở</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+                  <Bell size={18} color={currentTheme} /> Nhắc nhở
+                </span>
                 <label className="toggle-switch">
                   <input type="checkbox" checked={reminderOn} onChange={e => setReminderOn(e.target.checked)} />
-                  <span className="slider round"></span>
+                  <span className="slider round">
+
+                  </span>
                 </label>
               </div>
               {reminderOn && (
@@ -223,7 +229,9 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
 
            <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}><Repeat size={18} color={currentTheme} /> Lặp lại</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
+                  <Repeat size={18} color={currentTheme} /> Lặp lại
+                </span>
                 <label className="toggle-switch">
                   <input type="checkbox" checked={repeatOn} onChange={e => setRepeatOn(e.target.checked)} />
                   <span className="slider round"></span>
@@ -248,7 +256,7 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
               )}
            </div>
         </div>
-
+        {/* nút lưu */}
         <button 
           className="btn-primary" 
           onClick={handleSave} 
@@ -270,6 +278,8 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
         </button>
       </div>
 
+
+      {/* khung xem trước */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <div style={{
           padding: '24px',
