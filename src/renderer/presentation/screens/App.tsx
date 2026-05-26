@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import CalendarScreen from './CalendarScreen';
 import WeeklyOverviewScreen from './WeeklyOverviewScreen';
 
 //import YearlyTasksScreen from './YearlyTasksScreen';
@@ -32,6 +33,7 @@ const App: React.FC = () => {
         <Sidebar />
         <main className="main-content">
           <Routes>
+            <Route path="/calendar" element={<CalendarScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
             <Route path="/" element={<WeeklyOverviewScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
             {/* {<Route path="/" element={<WeeklyOverviewScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
             <Route path="/calendar" element={<CalendarScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
