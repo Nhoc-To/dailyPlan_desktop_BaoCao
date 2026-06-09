@@ -62,7 +62,7 @@ const TaskEditorScreen = ({ onTaskUpdated }) => {
             else {
                 await window.api.tasks.create(payload);
             }
-            onTaskUpdated();
+            await onTaskUpdated();
             navigate('/yearly');
         }
     };
