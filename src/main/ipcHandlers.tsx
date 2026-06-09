@@ -27,7 +27,7 @@ export function registerIpcHandlers() {
     return await taskService.updateExistingTask(id, updates);
   });
 
-  ipcMain.handle('tasks:delete', async (_, id) => {
-    return await taskService.removeTask(id);
+  ipcMain.handle('tasks:deleteTasks', async (_, ids:number) => {
+    return await taskService.removeTask(ids);
   });
 }

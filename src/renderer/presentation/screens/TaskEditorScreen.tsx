@@ -4,7 +4,7 @@ import { Bell, Repeat, CheckCircle, Plus, Calendar, Clock } from 'lucide-react';
 import { SYSTEM_CATEGORIES } from '../../../shared/constants';
 
 interface Props {
-  onTaskUpdated: () => void;
+  onTaskUpdated: () => Promise<void>;
 }
 
 const REMINDER_OPTS = ['5 phút', '10 phút', '30 phút', '1 giờ', '1 ngày'];
@@ -73,7 +73,7 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
         await window.api.tasks.create(payload);
       }
       
-      onTaskUpdated();
+      await onTaskUpdated();
       navigate('/yearly');
     }
   };

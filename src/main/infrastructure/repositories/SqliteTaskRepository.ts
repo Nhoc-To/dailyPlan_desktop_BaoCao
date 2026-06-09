@@ -52,9 +52,34 @@ export class SqliteTaskRepository implements ITaskRepository {
     return info.changes > 0;
   }
 
-  async deleteTask(id: number): Promise<boolean> {
-    const stmt = this.db.prepare('DELETE FROM Tasks WHERE id = ?');
-    const info = stmt.run(id);
-    return info.changes > 0;
+ async deleteTask(id: number): Promise<boolean> {
+  const stmt = this.db.prepare(
+    'DELETE FROM Tasks WHERE id = ?'
+  );
+
+  const info = stmt.run(id);
+
+  return info.changes > 0;
+}
+
+async deleteTasks(
+  ids: number[]
+): Promise<boolean> {
+
+  if (ids.length === 0) {
+    return false;
   }
+
+  const placeholders =
+    ids.map(() => '?').join(',');
+
+  const stmt = this.db.prepare(
+    `DELETE FROM Tasks
+     WHERE id IN (${placeholders})`
+  );
+
+  const info = stmt.run(...ids);
+
+  return info.changes > 0;
+}
 }

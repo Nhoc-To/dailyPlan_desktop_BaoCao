@@ -8,6 +8,7 @@ electron_1.contextBridge.exposeInMainWorld('api', {
         fetchAll: (options) => electron_1.ipcRenderer.invoke('tasks:fetchAll', options),
         create: (task) => electron_1.ipcRenderer.invoke('tasks:create', task),
         update: (id, updates) => electron_1.ipcRenderer.invoke('tasks:update', id, updates),
-        delete: (id) => electron_1.ipcRenderer.invoke('tasks:delete', id)
+        delete: (id) => electron_1.ipcRenderer.invoke('tasks:delete', id),
+        deleteTasks: (ids) => electron_1.ipcRenderer.invoke('tasks:deleteTasks', ids)
     }
 });
