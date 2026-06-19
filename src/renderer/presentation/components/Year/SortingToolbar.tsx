@@ -1,118 +1,75 @@
 import React from 'react';
 
-type SortType =
-  | 'date'
-  | 'duration'
-  | 'name';
+type SortType = 'date' | 'duration' | 'name';
 
 interface Props {
   sortBy: SortType;
   setSortBy: (value: SortType) => void;
 }
 
-const SORTS: {
-  key: SortType;
-  icon: string;
-  label: string;
-  desc: string;
-}[] = [
-  {
-    key: 'date',
-    icon: '📅',
-    label: 'Ngày gần nhất',
-    desc: 'Mới tạo lên trên'
-  },
-  {
-    key: 'duration',
-    icon: '⏳',
-    label: 'Sắp đến hạn',
-    desc: 'Hạn chót gần nhất'
-  },
-  {
-    key: 'name',
-    icon: '🔤',
-    label: 'Tên A–Z',
-    desc: 'Theo bảng chữ cái'
-  }
-];
+const SortingToolbar: React.FC<Props> = ({ sortBy, setSortBy }) => {
+  const options: { key: SortType; label: string; icon: React.ReactNode }[] = [
+    {
+      key: 'date',
+      label: 'Bắt đầu gần nhất',
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      ),
+    },
+    {
+      key: 'duration',
+      label: 'Sắp đến hạn',
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      ),
+    },
+    {
+      key: 'name',
+      label: 'Tên A–Z',
+      icon: (
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="9" y2="18"/>
+        </svg>
+      ),
+    },
+  ];
 
-const SortingToolbar: React.FC<Props> = ({
-  sortBy,
-  setSortBy
-}) => {
   return (
-    <div
-      style={{
-        background: '#FFFFFF',
-        borderRadius: '22px',
-        padding: '18px 22px',
-        marginBottom: '24px',
-        boxShadow: '0 8px 24px rgba(91,92,235,0.08)',
-        border: '1px solid #ECECF7'
-      }}
-    >
-      <div
-        style={{
-          marginBottom: '14px',
-          fontWeight: 700,
-          color: '#374151',
-          fontSize: '15px'
-        }}
-      >
-        🗂 Sắp xếp nhiệm vụ
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          gap: '12px',
-          flexWrap: 'wrap'
-        }}
-      >
-        {SORTS.map(({ key, icon, label, desc }) => {
-          const active = sortBy === key;
-          return (
-            <button
-              key={key}
-              onClick={() => setSortBy(key)}
-              style={{
-                padding: '12px 20px',
-                borderRadius: '16px',
-                border: active
-                  ? '2px solid #5B5CEB'
-                  : '2px solid #ECECF7',
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: '14px',
-                transition: 'all 0.18s ease',
-                background: active ? '#5B5CEB' : '#F5F6FF',
-                color: active ? '#FFFFFF' : '#5B5CEB',
-                boxShadow: active
-                  ? '0 4px 14px rgba(91,92,235,0.28)'
-                  : 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                gap: '2px',
-                minWidth: '140px'
-              }}
-            >
-              <span style={{ fontSize: '15px' }}>
-                {icon} {label}
-              </span>
-              <span
-                style={{
-                  fontSize: '11px',
-                  fontWeight: 400,
-                  opacity: active ? 0.85 : 0.6
-                }}
-              >
-                {desc}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+      <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, marginRight: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+        </svg>
+        Sắp xếp:
+      </span>
+      {options.map(opt => {
+        const active = sortBy === opt.key;
+        return (
+          <button
+            key={opt.key}
+            onClick={() => setSortBy(opt.key)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '7px 14px',
+              borderRadius: '8px',
+              border: active ? '1.5px solid #5B5CEB' : '1.5px solid #E5E7EB',
+              cursor: 'pointer',
+              fontWeight: 500,
+              fontSize: '13px',
+              background: active ? '#EEF2FF' : '#FFFFFF',
+              color: active ? '#5B5CEB' : '#374151',
+              transition: 'all 0.15s',
+            }}
+          >
+            {opt.icon}
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 };
