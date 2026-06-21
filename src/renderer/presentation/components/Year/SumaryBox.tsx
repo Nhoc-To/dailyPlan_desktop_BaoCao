@@ -16,7 +16,7 @@ const SummaryBox: React.FC<Props> = ({ tasks }) => {
 
   const cards = [
     {
-      label: 'Tổng nhiệm vụ',
+      label: 'Tổng tác vụ',
       value: total,
       color: '#5B5CEB',
       bg: '#EEF2FF',
