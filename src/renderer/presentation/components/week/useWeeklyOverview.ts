@@ -10,49 +10,11 @@ export const useWeeklyOverview = (tasks: Task[], onTaskUpdated?: () => void) => 
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [selectedTaskDateStr, setSelectedTaskDateStr] = useState<string>('');
-  const [mockCompletedDays, setMockCompletedDays] = useState<Record<number, string[]>>({});
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
-  const mockTasks: Task[] = useMemo(() => {
-    const today = new Date();
-    const day = today.getDay() || 7;
-    const monday = new Date(today);
-    if (day !== 1) {
-      monday.setDate(monday.getDate() - (day - 1));
-    }
-    const mondayStr = formatDateStr(monday);
-
-    return [
-      {
-        id: 9001,
-        name: 'Họp team dự án',
-        description: 'Sync tiến độ phần Week + Month với cả nhóm. Chuẩn bị slide báo cáo.',
-        startDate: mondayStr,
-        endDate: mondayStr,
-        completedDays: JSON.stringify(mockCompletedDays[9001] || []),
-        status: false,
-        color: '#4f46e5',
-        categoryId: 1,
-      } as Task,
-      {
-        id: 9002,
-        name: 'Làm bài tập React',
-        description: 'Hoàn thành assignment chia component cho dự án DailyPlan.',
-        startDate: mondayStr,
-        endDate: mondayStr,
-        completedDays: JSON.stringify(mockCompletedDays[9002] || []),
-        status: false,
-        color: '#22c55e',
-        categoryId: 2,
-      } as Task,
-    ];
-  }, [mockCompletedDays]);
-
-  const allTasks = useMemo(() => [...tasks, ...mockTasks], [tasks, mockTasks]);
-
-  const tasksByDateStr = useMemo(() => buildTasksByDateStr(allTasks), [allTasks]);
+  const tasksByDateStr = useMemo(() => buildTasksByDateStr(tasks), [tasks]);
 
   const currentWeekDays = useMemo(() => {
     return getWeekDays(selectedDay || new Date());
@@ -85,10 +47,6 @@ export const useWeeklyOverview = (tasks: Task[], onTaskUpdated?: () => void) => 
   };
 
   const handleDelete = async (id: number) => {
-    if (id >= 9000) {
-      alert('Đây là task mẫu, không xóa được.');
-      return;
-    }
     if (confirm('Bạn có chắc chắn muốn xóa tác vụ này?')) {
       if (window.api?.tasks) {
         await window.api.tasks.delete(id);
@@ -98,26 +56,6 @@ export const useWeeklyOverview = (tasks: Task[], onTaskUpdated?: () => void) => 
   };
 
   const handleToggleStatus = async (task: Task, dateStr: string) => {
-    if (task.id >= 9000) {
-      setMockCompletedDays(prev => {
-        const current = prev[task.id] || [];
-        const newDays = current.includes(dateStr)
-          ? current.filter(d => d !== dateStr)
-          : [...current, dateStr];
-        return { ...prev, [task.id]: newDays };
-      });
-
-      setSelectedTask(prev => {
-        if (!prev || prev.id !== task.id) return prev;
-        const current = mockCompletedDays[task.id] || [];
-        const newDays = current.includes(dateStr)
-          ? current.filter(d => d !== dateStr)
-          : [...current, dateStr];
-        return { ...prev, completedDays: JSON.stringify(newDays) } as Task;
-      });
-      return;
-    }
-
     if (!window.api?.tasks) return;
 
     let completedDays: string[] = [];
