@@ -5,5 +5,8 @@ export interface ITaskRepository {
   getTaskById(id: number): Promise<Task | null>;
   getAllTasks(): Promise<Task[]>;
   updateTask(id: number, task: Partial<Task>): Promise<boolean>;
+
   deleteTask(id: number): Promise<boolean>;
+
+  deleteTasks(ids: number[]): Promise<boolean>;
 }

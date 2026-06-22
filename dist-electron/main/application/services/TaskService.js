@@ -21,8 +21,8 @@ class TaskService {
     async updateExistingTask(id, updates) {
         return this.repository.updateTask(id, updates);
     }
-    async removeTask(id) {
-        return this.repository.deleteTask(id);
+    async removeTask(ids) {
+        return this.repository.deleteTask(ids);
     }
 }
 exports.TaskService = TaskService;

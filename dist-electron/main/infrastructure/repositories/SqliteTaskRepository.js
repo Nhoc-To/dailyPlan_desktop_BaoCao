@@ -40,5 +40,15 @@ class SqliteTaskRepository {
         const info = stmt.run(id);
         return info.changes > 0;
     }
+    async deleteTasks(ids) {
+        if (ids.length === 0) {
+            return false;
+        }
+        const placeholders = ids.map(() => '?').join(',');
+        const stmt = this.db.prepare(`DELETE FROM Tasks
+     WHERE id IN (${placeholders})`);
+        const info = stmt.run(...ids);
+        return info.changes > 0;
+    }
 }
 exports.SqliteTaskRepository = SqliteTaskRepository;
