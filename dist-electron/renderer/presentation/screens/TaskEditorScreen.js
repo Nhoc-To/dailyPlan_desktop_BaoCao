@@ -17,12 +17,18 @@ const TaskEditorScreen = ({ onTaskUpdated }) => {
         const day = String(d.getDate()).padStart(2, '0');
         return `${y}-${m}-${day}`;
     };
+    const getLocalHM = (d) => {
+        const h = String(d.getHours()).padStart(2, '0');
+        const m = String(d.getMinutes()).padStart(2, '0');
+        return `${h}:${m}`;
+    };
+    const isEditing = !!editTask?.id;
     const [taskName, setTaskName] = (0, react_1.useState)(editTask?.name || '');
     const [description, setDescription] = (0, react_1.useState)(editTask?.description || '');
     const [date, setDate] = (0, react_1.useState)(editTask?.startDate || getLocalYMD(new Date()));
     const [endDate, setEndDate] = (0, react_1.useState)(editTask?.endDate || editTask?.startDate || getLocalYMD(new Date()));
-    const [startTime, setStartTime] = (0, react_1.useState)(editTask?.startTime || '');
-    const [endTime, setEndTime] = (0, react_1.useState)(editTask?.endTime || '');
+    const [startTime, setStartTime] = (0, react_1.useState)(editTask?.startTime || (isEditing ? '' : getLocalHM(new Date())));
+    const [endTime, setEndTime] = (0, react_1.useState)(editTask?.endTime || (isEditing ? '' : '23:59'));
     const [customCategory, setCustomCategory] = (0, react_1.useState)(editTask?.tags || ''); // Using tags column for custom category
     const [categoryId, setCategoryId] = (0, react_1.useState)(editTask?.categoryId || 1);
     const [customColor, setCustomColor] = (0, react_1.useState)(editTask?.color || constants_1.SYSTEM_CATEGORIES[0].color);
@@ -38,9 +44,23 @@ const TaskEditorScreen = ({ onTaskUpdated }) => {
             setEndDate(date);
         }
     }, [date, editTask]);
+    const isValidTime = (t) => {
+        if (!t)
+            return true;
+        const parts = t.split(':');
+        if (parts.length !== 2)
+            return false;
+        const h = parseInt(parts[0]);
+        const m = parseInt(parts[1]);
+        return h >= 0 && h <= 23 && m >= 0 && m <= 59;
+    };
     const handleSave = async () => {
         if (!taskName)
             return;
+        if (!isValidTime(startTime) || !isValidTime(endTime)) {
+            alert("Giờ nhập vào không hợp lệ! Vui lòng nhập đúng định dạng 24h (ví dụ: 08:30 hoặc 23:59, nằm trong khoảng 00:00 - 24:00).");
+            return;
+        }
         if (window.api && window.api.tasks) {
             const finalEndTime = endTime || '23:59';
             const payload = {
@@ -68,14 +88,27 @@ const TaskEditorScreen = ({ onTaskUpdated }) => {
     };
     const currentTheme = customColor;
     const isInvalid = !taskName.trim();
-    return ((0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '24px', height: '100%', alignItems: 'flex-start' }, children: [(0, jsx_runtime_1.jsxs)("div", { className: "glass card", style: {
+    return ((0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '24px', height: '100%', alignItems: 'flex-start', flexWrap: 'wrap', overflowY: 'auto', paddingRight: '8px' }, children: [(0, jsx_runtime_1.jsxs)("div", { className: "glass card", style: {
                     flex: 1.2,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '24px',
                     maxHeight: '100%',
-                    overflowY: 'auto'
-                }, children: [(0, jsx_runtime_1.jsx)("h2", { style: { color: 'var(--text-main)', marginBottom: '8px', fontSize: '1.8rem', fontWeight: 700 }, children: "T\u1EA1o T\u00E1c V\u1EE5 M\u1EDBi" }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', flexDirection: 'column', gap: '16px' }, children: [(0, jsx_runtime_1.jsx)("input", { className: "form-input", style: { fontSize: '1.2rem', padding: '16px', fontWeight: 600, borderLeft: `4px solid ${currentTheme}` }, type: "text", placeholder: "T\u00EAn t\u00E1c v\u1EE5 (B\u1EAFt bu\u1ED9c)...", value: taskName, onChange: (e) => setTaskName(e.target.value) }), (0, jsx_runtime_1.jsx)("textarea", { className: "form-input", placeholder: "M\u00F4 t\u1EA3 chi ti\u1EBFt", rows: 3, value: description, onChange: (e) => setDescription(e.target.value) }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '16px' }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { flex: 1 }, children: [(0, jsx_runtime_1.jsxs)("label", { style: { fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }, children: [(0, jsx_runtime_1.jsx)(lucide_react_1.Calendar, { size: 16 }), " B\u1EAFt \u0111\u1EA7u"] }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '8px' }, children: [(0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: { flex: 2 } }), (0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "time", value: startTime, onChange: (e) => setStartTime(e.target.value), style: { flex: 1 } })] })] }), (0, jsx_runtime_1.jsxs)("div", { style: { flex: 1 }, children: [(0, jsx_runtime_1.jsxs)("label", { style: { fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }, children: [(0, jsx_runtime_1.jsx)(lucide_react_1.Clock, { size: 16 }), " K\u1EBFt th\u00FAc"] }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '8px' }, children: [(0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "date", value: endDate, onChange: (e) => setEndDate(e.target.value), style: { flex: 2 } }), (0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "time", value: endTime, onChange: (e) => setEndTime(e.target.value), placeholder: "23:59", style: { flex: 1 } })] })] })] })] }), (0, jsx_runtime_1.jsxs)("div", { children: [(0, jsx_runtime_1.jsx)("label", { style: { fontSize: '1rem', fontWeight: 600, marginBottom: '12px', display: 'block' }, children: "Ph\u00E2n lo\u1EA1i t\u00E1c v\u1EE5" }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', flexWrap: 'wrap', gap: '12px' }, children: [constants_1.SYSTEM_CATEGORIES.map(c => ((0, jsx_runtime_1.jsx)("button", { onClick: () => { setCategoryId(c.id); setCustomColor(c.color); }, style: {
+                    overflowY: 'auto',
+                    minWidth: '360px'
+                }, children: [(0, jsx_runtime_1.jsx)("h2", { style: { color: 'var(--text-main)', marginBottom: '8px', fontSize: '1.8rem', fontWeight: 700 }, children: "T\u1EA1o T\u00E1c V\u1EE5 M\u1EDBi" }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', flexDirection: 'column', gap: '16px' }, children: [(0, jsx_runtime_1.jsx)("input", { className: "form-input", style: { fontSize: '1.2rem', padding: '16px', fontWeight: 600, borderLeft: `4px solid ${currentTheme}` }, type: "text", placeholder: "T\u00EAn t\u00E1c v\u1EE5 (B\u1EAFt bu\u1ED9c)...", value: taskName, onChange: (e) => setTaskName(e.target.value) }), (0, jsx_runtime_1.jsx)("textarea", { className: "form-input", placeholder: "M\u00F4 t\u1EA3 chi ti\u1EBFt", rows: 3, value: description, onChange: (e) => setDescription(e.target.value) }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '16px', flexWrap: 'wrap' }, children: [(0, jsx_runtime_1.jsxs)("div", { style: { flex: 1, minWidth: '240px' }, children: [(0, jsx_runtime_1.jsxs)("label", { style: { fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }, children: [(0, jsx_runtime_1.jsx)(lucide_react_1.Calendar, { size: 16 }), " B\u1EAFt \u0111\u1EA7u"] }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' }, children: [(0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: { flex: 2, minWidth: '130px' } }), (0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "text", placeholder: "HH:MM (24h)", maxLength: 5, value: startTime, onChange: (e) => {
+                                                            let val = e.target.value.replace(/[^0-9]/g, '');
+                                                            if (val.length > 2) {
+                                                                val = val.slice(0, 2) + ':' + val.slice(2, 4);
+                                                            }
+                                                            setStartTime(val);
+                                                        }, style: { flex: 1, minWidth: '95px', textAlign: 'center' } })] })] }), (0, jsx_runtime_1.jsxs)("div", { style: { flex: 1, minWidth: '240px' }, children: [(0, jsx_runtime_1.jsxs)("label", { style: { fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }, children: [(0, jsx_runtime_1.jsx)(lucide_react_1.Clock, { size: 16 }), " K\u1EBFt th\u00FAc"] }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '8px', flexWrap: 'wrap' }, children: [(0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "date", value: endDate, onChange: (e) => setEndDate(e.target.value), style: { flex: 2, minWidth: '130px' } }), (0, jsx_runtime_1.jsx)("input", { className: "form-input", type: "text", placeholder: "23:59 (24h)", maxLength: 5, value: endTime, onChange: (e) => {
+                                                            let val = e.target.value.replace(/[^0-9]/g, '');
+                                                            if (val.length > 2) {
+                                                                val = val.slice(0, 2) + ':' + val.slice(2, 4);
+                                                            }
+                                                            setEndTime(val);
+                                                        }, style: { flex: 1, minWidth: '95px', textAlign: 'center' } })] })] })] })] }), (0, jsx_runtime_1.jsxs)("div", { children: [(0, jsx_runtime_1.jsx)("label", { style: { fontSize: '1rem', fontWeight: 600, marginBottom: '12px', display: 'block' }, children: "Ph\u00E2n lo\u1EA1i t\u00E1c v\u1EE5" }), (0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', flexWrap: 'wrap', gap: '12px' }, children: [constants_1.SYSTEM_CATEGORIES.map(c => ((0, jsx_runtime_1.jsx)("button", { onClick: () => { setCategoryId(c.id); setCustomColor(c.color); }, style: {
                                             padding: '8px 16px',
                                             borderRadius: '20px',
                                             border: '1px solid transparent',
@@ -84,7 +117,7 @@ const TaskEditorScreen = ({ onTaskUpdated }) => {
                                             cursor: 'pointer',
                                             fontWeight: 600,
                                             transition: 'all 0.2s ease'
-                                        }, children: c.name }, c.id))), (0, jsx_runtime_1.jsx)("input", { type: "text", placeholder: "+ G\u00F5 t\u00F9y ch\u1EC9nh...", value: customCategory, onChange: e => setCustomCategory(e.target.value), style: {
+                                        }, children: c.name }, c.id))), (0, jsx_runtime_1.jsx)("input", { type: "text", placeholder: "+ T\u00F9y ch\u1EC9nh...", value: customCategory, onChange: e => setCustomCategory(e.target.value), style: {
                                             padding: '8px 16px',
                                             borderRadius: '20px',
                                             border: '1px dashed var(--text-muted)',
@@ -115,7 +148,7 @@ const TaskEditorScreen = ({ onTaskUpdated }) => {
                             borderRadius: '12px',
                             color: 'white',
                             fontWeight: 600
-                        }, children: isInvalid ? 'Nhập tên tác vụ để lưu' : (editTask ? 'CẬP NHẬT TÁC VỤ' : 'TẠO TÁC VỤ') })] }), (0, jsx_runtime_1.jsx)("div", { style: { flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }, children: (0, jsx_runtime_1.jsx)("div", { style: {
+                        }, children: isInvalid ? 'Nhập tên tác vụ để lưu' : (editTask ? 'CẬP NHẬT TÁC VỤ' : 'TẠO TÁC VỤ') })] }), (0, jsx_runtime_1.jsx)("div", { style: { flex: 1, display: 'flex', flexDirection: 'column', gap: '24px', minWidth: '300px' }, children: (0, jsx_runtime_1.jsx)("div", { style: {
                         padding: '24px',
                         borderRadius: '24px',
                         background: isInvalid ? 'rgba(255, 82, 82, 0.1)' : `${customColor}1A`,

@@ -29,7 +29,7 @@ const TaskItem: React.FC<Props> = ({
   try {
 
     completedDays = JSON.parse(
-      typeof task.completedDays === 'string' ? task.completedDays : '[]'
+      task.completedDays || '[]'
     );
 
   }

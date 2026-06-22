@@ -32,10 +32,13 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const path = __importStar(require("path"));
-const ipcHandlers_1 = require("./ipcHandlers");
+const ipcHandlers_1 = __importDefault(require("./ipcHandlers"));
 function createWindow() {
     const mainWindow = new electron_1.BrowserWindow({
         width: 1280,
@@ -58,8 +61,9 @@ function createWindow() {
     }
 }
 electron_1.app.whenReady().then(() => {
-    (0, ipcHandlers_1.registerIpcHandlers)();
+    (0, ipcHandlers_1.default)();
     createWindow();
+    console.log('đã tạo cửa sổ mới');
     electron_1.app.on('activate', function () {
         if (electron_1.BrowserWindow.getAllWindows().length === 0)
             createWindow();

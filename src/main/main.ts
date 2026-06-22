@@ -1,7 +1,6 @@
-import {app, BrowserWindow} from 'electron';
+import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { registerIpcHandlers } from './ipcHandlers';
-
+import registerIpcHandlers from './ipcHandlers';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -28,7 +27,7 @@ function createWindow() {
 app.whenReady().then(() => {
   registerIpcHandlers();
   createWindow();
-
+  console.log('đã tạo cửa sổ mới');
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });

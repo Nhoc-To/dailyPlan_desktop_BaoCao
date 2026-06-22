@@ -21,12 +21,20 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
     return `${y}-${m}-${day}`;
   };
 
+  const getLocalHM = (d: Date) => {
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  };
+
+  const isEditing = !!editTask?.id;
+
   const [taskName, setTaskName] = useState(editTask?.name || '');
   const [description, setDescription] = useState(editTask?.description || '');
   const [date, setDate] = useState(editTask?.startDate || getLocalYMD(new Date()));
   const [endDate, setEndDate] = useState(editTask?.endDate || editTask?.startDate || getLocalYMD(new Date()));
-  const [startTime, setStartTime] = useState(editTask?.startTime || '');
-  const [endTime, setEndTime] = useState(editTask?.endTime || '');
+  const [startTime, setStartTime] = useState(editTask?.startTime || (isEditing ? '' : getLocalHM(new Date())));
+  const [endTime, setEndTime] = useState(editTask?.endTime || (isEditing ? '' : '23:59'));
   
   const [customCategory, setCustomCategory] = useState(editTask?.tags || ''); // Using tags column for custom category
   
@@ -49,8 +57,21 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
     }
   }, [date, editTask]);
 
+  const isValidTime = (t: string) => {
+    if (!t) return true;
+    const parts = t.split(':');
+    if (parts.length !== 2) return false;
+    const h = parseInt(parts[0]);
+    const m = parseInt(parts[1]);
+    return h >= 0 && h <= 23 && m >= 0 && m <= 59;
+  };
+
   const handleSave = async () => {
     if (!taskName) return;
+    if (!isValidTime(startTime) || !isValidTime(endTime)) {
+      alert("Giờ nhập vào không hợp lệ! Vui lòng nhập đúng định dạng 24h (ví dụ: 08:30 hoặc 23:59, nằm trong khoảng 00:00 - 24:00).");
+      return;
+    }
     if (window.api && window.api.tasks) {
       const finalEndTime = endTime || '23:59';
       const payload = {
@@ -82,7 +103,7 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
   const isInvalid = !taskName.trim();
 
   return (
-    <div style={{ display: 'flex', gap: '24px', height: '100%', alignItems: 'flex-start' }}>
+    <div style={{ display: 'flex', gap: '24px', height: '100%', alignItems: 'flex-start', flexWrap: 'wrap', overflowY: 'auto', paddingRight: '8px' }}>
       
       <div className="glass card" style={{ 
         flex: 1.2, 
@@ -90,7 +111,8 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
         flexDirection: 'column', 
         gap: '24px',
         maxHeight: '100%',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        minWidth: '360px'
       }}>
         <h2 style={{ color: 'var(--text-main)', marginBottom: '8px', fontSize: '1.8rem', fontWeight: 700 }}>
           Tạo Tác Vụ Mới
@@ -112,23 +134,51 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <div style={{ display: 'flex', gap: '16px' }}>
-            <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: '240px' }}>
               <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Calendar size={16} /> Bắt đầu
               </label>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <input className="form-input" type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ flex: 2 }} />
-                <input className="form-input" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} style={{ flex: 1 }} />
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <input className="form-input" type="date" value={date} onChange={(e) => setDate(e.target.value)} style={{ flex: 2, minWidth: '130px' }} />
+                <input 
+                  className="form-input" 
+                  type="text" 
+                  placeholder="HH:MM (24h)" 
+                  maxLength={5}
+                  value={startTime} 
+                  onChange={(e) => {
+                    let val = e.target.value.replace(/[^0-9]/g, '');
+                    if (val.length > 2) {
+                      val = val.slice(0, 2) + ':' + val.slice(2, 4);
+                    }
+                    setStartTime(val);
+                  }} 
+                  style={{ flex: 1, minWidth: '95px', textAlign: 'center' }} 
+                />
               </div>
             </div>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, minWidth: '240px' }}>
                <label style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                 <Clock size={16} /> Kết thúc
               </label>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <input className="form-input" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ flex: 2 }} />
-                <input className="form-input" type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} placeholder="23:59" style={{ flex: 1 }} />
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <input className="form-input" type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} style={{ flex: 2, minWidth: '130px' }} />
+                <input 
+                  className="form-input" 
+                  type="text" 
+                  placeholder="23:59 (24h)" 
+                  maxLength={5}
+                  value={endTime} 
+                  onChange={(e) => {
+                    let val = e.target.value.replace(/[^0-9]/g, '');
+                    if (val.length > 2) {
+                      val = val.slice(0, 2) + ':' + val.slice(2, 4);
+                    }
+                    setEndTime(val);
+                  }} 
+                  style={{ flex: 1, minWidth: '95px', textAlign: 'center' }} 
+                />
               </div>
             </div>
           </div>
@@ -157,7 +207,7 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
             ))}
             <input 
               type="text" 
-              placeholder="+ Gõ tùy chỉnh..." 
+              placeholder="+ Tùy chỉnh..." 
               value={customCategory}
               onChange={e => setCustomCategory(e.target.value)}
               style={{
@@ -270,7 +320,7 @@ const TaskEditorScreen: React.FC<Props> = ({ onTaskUpdated }) => {
         </button>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '24px', minWidth: '300px' }}>
         <div style={{
           padding: '24px',
           borderRadius: '24px',

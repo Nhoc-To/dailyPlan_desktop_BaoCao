@@ -1,4 +1,4 @@
-import { Task } from '../../../shared/domain/entities';
+import { Task } from "../services/TaskService";
 
 export interface TaskFilterStrategy {
   filter(tasks: Task[]): Task[];
@@ -6,7 +6,11 @@ export interface TaskFilterStrategy {
 
 // Strategy lọc theo trạng thái
 export class StatusFilterStrategy implements TaskFilterStrategy {
-  constructor(private status: boolean) {}
+  private status: string;
+
+  constructor(status: string) {
+    this.status = status;
+  }
 
   filter(tasks: Task[]): Task[] {
     return tasks.filter((t) => t.status === this.status);
@@ -15,11 +19,15 @@ export class StatusFilterStrategy implements TaskFilterStrategy {
 
 // Strategy lọc theo thời gian (Hôm nay, trong tuần v.v)
 export class DateFilterStrategy implements TaskFilterStrategy {
-  constructor(private targetDate: string) {}
+  private targetDate: string;
+
+  constructor(targetDate: string) {
+    this.targetDate = targetDate;
+  }
 
   filter(tasks: Task[]): Task[] {
     // Demo đơn giản lọc theo ngày bắt đầu chính xác
-    return tasks.filter((t) => t.startDate.startsWith(this.targetDate));
+    return tasks.filter((t) => (t.startDate as string).startsWith(this.targetDate));
   }
 }
 

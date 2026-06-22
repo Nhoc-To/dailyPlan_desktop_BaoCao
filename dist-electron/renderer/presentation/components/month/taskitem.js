@@ -9,7 +9,7 @@ const TaskItem = ({ task, dateStr, onEdit, onDelete }) => {
         constants_1.SYSTEM_CATEGORIES[0].color;
     let completedDays = [];
     try {
-        completedDays = JSON.parse(typeof task.completedDays === 'string' ? task.completedDays : '[]');
+        completedDays = JSON.parse(task.completedDays || '[]');
     }
     catch {
         completedDays = [];

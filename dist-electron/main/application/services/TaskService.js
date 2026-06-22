@@ -8,21 +8,21 @@ class TaskService {
         this.repository = repository;
     }
     async fetchAllTasks(strategy = new TaskFilterStrategy_1.NullFilterStrategy()) {
-        const allTasks = await this.repository.getAllTasks();
+        const allTasks = this.repository.findAll();
         return strategy.filter(allTasks); // Áp dụng Strategy pattern để lọc dữ liệu nếu cần
     }
     async fetchTaskDetails(id) {
-        return this.repository.getTaskById(id);
+        return this.repository.findById(id);
     }
     async createNewTask(taskInfo) {
         // Các logic validation có thể đặt ở đây
-        return this.repository.createTask(taskInfo);
+        return this.repository.create(taskInfo);
     }
     async updateExistingTask(id, updates) {
-        return this.repository.updateTask(id, updates);
+        return this.repository.update(id, updates);
     }
     async removeTask(id) {
-        return this.repository.deleteTask(id);
+        return this.repository.delete(id);
     }
 }
 exports.TaskService = TaskService;

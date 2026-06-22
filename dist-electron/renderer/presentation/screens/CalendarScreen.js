@@ -13,19 +13,30 @@ const usemonthTask_1 = __importDefault(require("../components/month/usemonthTask
 const CalendarScreen = ({ tasks, onTaskUpdated }) => {
     const navigate = (0, react_router_dom_1.useNavigate)();
     const [currentDate, setCurrentDate] = (0, react_1.useState)(new Date());
+    const [selectedDate, setSelectedDate] = (0, react_1.useState)(undefined); // THÊM state
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const tasksByDate = (0, usemonthTask_1.default)(tasks, year, month);
-    const prevMonth = () => {
+    const prevMonth = (e) => {
+        e.stopPropagation();
         setCurrentDate(new Date(year, month - 1, 1));
+        setSelectedDate(undefined); // Reset selected date khi chuyển tháng
     };
-    const nextMonth = () => {
+    const nextMonth = (e) => {
+        e.stopPropagation();
         setCurrentDate(new Date(year, month + 1, 1));
+        setSelectedDate(undefined); // Reset selected date khi chuyển tháng
     };
     const goToday = () => {
-        setCurrentDate(new Date());
+        const today = new Date();
+        setCurrentDate(today);
+        // Set selected date to today
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        setSelectedDate(todayStr);
     };
-    const handleDayClick = (date) => {
+    // CHỈ mở form tạo task khi double-click hoặc có nút thêm
+    const handleDayDoubleClick = (date, e) => {
+        e.stopPropagation();
         navigate('/editor', {
             state: {
                 task: {
@@ -35,32 +46,23 @@ const CalendarScreen = ({ tasks, onTaskUpdated }) => {
             }
         });
     };
+    // Chọn ngày (không mở form)
+    const handleSelectDay = (date) => {
+        setSelectedDate(date);
+    };
     const handleEdit = (task) => {
         navigate('/editor', {
-            state: {
-                task
-            }
+            state: { task }
         });
     };
     const handleDelete = async (id) => {
         if (confirm('Bạn có chắc chắn muốn xóa tác vụ này?')) {
             if (window.api?.tasks) {
-                await window
-                    .api
-                    .tasks
-                    .delete(id);
+                await window.api.tasks.delete(id);
                 onTaskUpdated?.();
             }
         }
     };
-    return ((0, jsx_runtime_1.jsxs)("div", { style: {
-            display: 'flex',
-            gap: '24px',
-            height: '100%',
-            width: '100%'
-        }, children: [(0, jsx_runtime_1.jsx)(monthSidebar_1.default, { year: year, month: month, tasksByDate: tasksByDate, prevMonth: prevMonth, nextMonth: nextMonth, onDayClick: handleDayClick }), (0, jsx_runtime_1.jsxs)("div", { className: "glass card", style: {
-                    flex: 1,
-                    padding: '24px'
-                }, children: [(0, jsx_runtime_1.jsx)(monthHeader_1.default, { month: month, year: year, goToday: goToday }), (0, jsx_runtime_1.jsx)(monthGrid_1.default, { year: year, month: month, tasksByDate: tasksByDate, onDayClick: handleDayClick, onEdit: handleEdit, onDelete: handleDelete })] })] }));
+    return ((0, jsx_runtime_1.jsxs)("div", { style: { display: 'flex', gap: '24px', height: '100%', width: '100%' }, children: [(0, jsx_runtime_1.jsx)(monthSidebar_1.default, { year: year, month: month, tasksByDate: tasksByDate, prevMonth: prevMonth, nextMonth: nextMonth, onDayClick: handleDayDoubleClick, onSelectDay: handleSelectDay, selectedDate: selectedDate }), (0, jsx_runtime_1.jsxs)("div", { className: "glass card", style: { flex: 1, padding: '24px' }, children: [(0, jsx_runtime_1.jsx)(monthHeader_1.default, { month: month, year: year, goToday: goToday, onPrevMonth: prevMonth, onNextMonth: nextMonth }), (0, jsx_runtime_1.jsx)(monthGrid_1.default, { year: year, month: month, tasksByDate: tasksByDate, onDayClick: handleSelectDay, onEdit: handleEdit, onDelete: handleDelete, selectedDate: selectedDate })] })] }));
 };
 exports.default = CalendarScreen;

@@ -4,7 +4,7 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  base: './', // Using relative paths for Electron
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -13,7 +13,7 @@ export default defineConfig({
   root: path.resolve(__dirname, 'src/renderer'),
   server: {
     port: 5173,
-    strictPort: true, // Fail if port is occupied
+    strictPort: true,
   },
   build: {
     outDir: '../../dist',
