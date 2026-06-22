@@ -12,7 +12,7 @@ const SummaryBox = ({ tasks }) => {
     const active = total - completed - overdue;
     const cards = [
         {
-            label: 'Tổng nhiệm vụ',
+            label: 'Tổng tác vụ',
             value: total,
             color: '#5B5CEB',
             bg: '#EEF2FF',

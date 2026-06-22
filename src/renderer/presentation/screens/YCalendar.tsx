@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Task } from '../../../shared/domain/entities';
-import SummaryBox from '../components/Year/SumaryBox';
 import SortingToolbar from '../components/Year/SortingToolbar';
 import TaskYearCard from '../components/Year/TaskYearCard';
 import BulkDeleteBar from '../components/Year/BulDeleteBar';
@@ -13,7 +12,7 @@ interface Props {
   onTaskUpdated: () => Promise<void>;
 }
 
-const MONTHS = ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'];
+
 
 const YCalendar: React.FC<Props> = ({ tasks, onTaskUpdated }) => {
   const navigate = useNavigate();
@@ -140,27 +139,7 @@ const YCalendar: React.FC<Props> = ({ tasks, onTaskUpdated }) => {
         </div>
       </div>
 
-      {/* ── Summary cards ── */}
-      <SummaryBox tasks={tasksForYear} />
-
-      {/* ── Monthly bar chart ── */}
-      <div style={{ background: '#FFFFFF', borderRadius: '12px', padding: '20px 24px', border: '1px solid #E5E7EB', marginBottom: '20px' }}>
-        <div style={{ fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B5CEB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/>
-          </svg>
-          Phân bố theo tháng
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12,1fr)', gap: '8px', alignItems: 'flex-end' }}>
-          {monthStats.map((count, i) => (
-            <div key={i} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: count > 0 ? '#5B5CEB' : '#D1D5DB', marginBottom: '4px' }}>{count}</div>
-              <div style={{ height: `${Math.max(6, (count / maxMonth) * 48)}px`, background: count > 0 ? 'linear-gradient(180deg,#818CF8,#5B5CEB)' : '#F3F4F6', borderRadius: '4px 4px 0 0', transition: 'height 0.3s' }} />
-              <div style={{ fontSize: '11px', color: '#9CA3AF', marginTop: '4px', fontWeight: 500 }}>{MONTHS[i]}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+     
 
       {/* ── Bulk delete bar ── */}
       {selectionMode && (
