@@ -6,6 +6,7 @@ import Sidebar from '../components/Sidebar';
 // import YearlyTasksScreen from './YearlyTasksScreen';
 // import StatsScreen from './StatsScreen';
 import TaskEditorScreen from './TaskEditorScreen';
+import AboutScreen from './AboutScreen';
 import { Task } from '../../../shared/domain/entities';
 
 const App: React.FC = () => {
@@ -36,7 +37,10 @@ const App: React.FC = () => {
             <Route path="/calendar" element={<CalendarScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
             <Route path="/yearly" element={<YearlyTasksScreen tasks={tasks} onTaskUpdated={fetchTasks} />} />
             <Route path="/stats" element={<StatsScreen tasks={tasks} />} /> */}
+            {/* form tác vụ */}
             <Route path="/editor" element={<TaskEditorScreen onTaskUpdated={fetchTasks} />} />
+            {/* thông tin */}
+            <Route path="/about" element={<AboutScreen />} />
           </Routes>
         </main>
       </div>

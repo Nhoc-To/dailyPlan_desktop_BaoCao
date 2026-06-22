@@ -1,41 +1,36 @@
-import {app, BrowserWindow} from 'electron';
-import * as path from 'path';
+import { app, BrowserWindow, } from 'electron';
 import { registerIpcHandlers } from './ipcHandlers';
+import * as path from 'path';
 
-
-function createWindow() {
+function createMainWindow() {
   const mainWindow = new BrowserWindow({
+
     width: 1280,
     height: 800,
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
-      // Vô hiệu hóa nodeIntegration để bảo mật
-      nodeIntegration: false,
       contextIsolation: true,
+      nodeIntegration: false,
     },
-  });
 
-  // Trong chế độ dev, load URL Vite
+    //chuẩn bị làm titlebar
+    // titleBarStyle: 'hidden',
+  });
   if (!app.isPackaged) {
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
-    // Trong production, load file html build ra
     mainWindow.loadFile(path.join(__dirname, '../../dist/index.html'));
-  }
+  };
 }
 
 app.whenReady().then(() => {
   registerIpcHandlers();
-  createWindow();
+  createMainWindow();
 
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createMainWindow();
+    }
   });
 });
-
-// app.on('window-all-closed', () => {
-//   if (process.platform !== 'darwin') {
-//     app.quit();
-//   }
-// });

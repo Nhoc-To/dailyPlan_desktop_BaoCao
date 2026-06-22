@@ -33,12 +33,12 @@ export interface Reminder {
     time: string;
 }
 
-export interface Student {
-    id: number;
-    name: string;
-    fullName: string;
-    gender: string;
-    phone: string;
-    email: string;
-    status: string;
-}
+// export interface Student {
+//     id: number;
+//     name: string;
+//     fullName: string;
+//     gender: string;
+//     phone: string;
+//     email: string;
+//     status: string;
+// }

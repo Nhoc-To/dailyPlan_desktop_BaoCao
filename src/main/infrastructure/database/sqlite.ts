@@ -18,7 +18,7 @@ class DatabaseConnection {
 
       // Init schema
       DatabaseConnection.instance.exec(`
-        CREATE TABLE IF NOT EXISTS Categories (
+          CREATE TABLE IF NOT EXISTS Categories (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name TEXT,
           color TEXT,
@@ -56,16 +56,6 @@ class DatabaseConnection {
           FOREIGN KEY (taskId) REFERENCES Tasks (id) ON DELETE CASCADE
         );
 
-        CREATE TABLE IF NOT EXISTS Students (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          fullName TEXT,
-          gender TEXT,
-          phone TEXT,
-          email TEXT,
-          status TEXT
-        );
-
-        -- Thêm một số Category mặc định (nếu chưa có)
         INSERT INTO Categories (name, color, status)
         SELECT 'Học tập', '#ff5252', 1
         WHERE NOT EXISTS (SELECT 1 FROM Categories WHERE name = 'Học tập');
@@ -78,28 +68,6 @@ class DatabaseConnection {
         SELECT 'Giải trí', '#69f0ae', 1
         WHERE NOT EXISTS (SELECT 1 FROM Categories WHERE name = 'Giải trí');
       `);
-      // Migration cho table Tasks cũ (thêm description và repeat nếu chưa có)
-      try {
-        DatabaseConnection.instance.exec("ALTER TABLE Tasks ADD COLUMN description TEXT;");
-      } catch (e) { /* Column already exists */ }
-      try {
-        DatabaseConnection.instance.exec("ALTER TABLE Tasks ADD COLUMN repeat TEXT;");
-      } catch (e) { /* Column already exists */ }
-      try {
-        DatabaseConnection.instance.exec("ALTER TABLE Tasks ADD COLUMN color TEXT;");
-      } catch (e) { /* Column already exists */ }
-      try {
-        DatabaseConnection.instance.exec("ALTER TABLE Tasks ADD COLUMN startTime TEXT;");
-      } catch (e) { /* Column already exists */ }
-      try {
-        DatabaseConnection.instance.exec("ALTER TABLE Tasks ADD COLUMN endTime TEXT;");
-      } catch (e) { /* Column already exists */ }
-      try {
-        DatabaseConnection.instance.exec("ALTER TABLE Tasks ADD COLUMN tags TEXT;");
-      } catch (e) { /* Column already exists */ }
-      try {
-        DatabaseConnection.instance.exec("ALTER TABLE Tasks ADD COLUMN completedDays TEXT;");
-      } catch (e) { /* Column already exists */ }
     }
     return DatabaseConnection.instance;
   }
